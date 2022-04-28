@@ -2,6 +2,7 @@ package com.example.contoller;
 
 import com.example.wallet.command.CreateWalletCommand;
 import com.example.wallet.command.DepositCommand;
+import com.example.wallet.command.PayCommand;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,12 +20,18 @@ public class WalletController {
     @PostMapping("/{id}")
     public void createWallet(@PathVariable("id") String id) {
         CreateWalletCommand command = new CreateWalletCommand(id);
-        commandGateway.send(command);
+        commandGateway.sendAndWait(command);
     }
 
     @PutMapping("/{id}/deposit")
     public void deposit(@PathVariable("id") String id, @RequestParam("amount") BigDecimal amount) {
         DepositCommand command = new DepositCommand(id, amount);
-        commandGateway.send(command);
+        commandGateway.sendAndWait(command);
+    }
+
+    @PutMapping("/{id}/pay")
+    public void pay(@PathVariable("id") String id, @RequestParam("amount") BigDecimal amount) {
+        PayCommand command = new PayCommand(id, amount);
+        commandGateway.sendAndWait(command);
     }
 }

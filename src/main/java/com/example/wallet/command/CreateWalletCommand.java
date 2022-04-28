@@ -2,7 +2,7 @@ package com.example.wallet.command;
 
 public class CreateWalletCommand {
 
-    private String id;
+    private final String id;
 
     public CreateWalletCommand(String id) {
         this.id = id;

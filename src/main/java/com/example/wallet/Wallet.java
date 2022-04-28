@@ -2,7 +2,9 @@ package com.example.wallet;
 
 import com.example.wallet.command.CreateWalletCommand;
 import com.example.wallet.command.DepositCommand;
+import com.example.wallet.command.PayCommand;
 import com.example.wallet.event.DepositedEvent;
+import com.example.wallet.event.PaidEvent;
 import com.example.wallet.event.WalletCreatedEvent;
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.eventsourcing.EventSourcingHandler;
@@ -45,4 +47,19 @@ public class Wallet {
     public void on(DepositedEvent event) {
         this.balance = this.balance.add(event.getAmount());
     }
+
+    @CommandHandler
+    public void handle(PayCommand command) {
+        if (this.balance.compareTo(command.getAmount()) < 0) {
+            throw new IllegalStateException("Insufficient wallet balance");
+        }
+        PaidEvent event = new PaidEvent(command.getAmount());
+        AggregateLifecycle.apply(event);
+    }
+
+    @EventSourcingHandler
+    public void on(PaidEvent event) {
+        this.balance = this.balance.subtract(event.getPayAmount());
+    }
+
 }
