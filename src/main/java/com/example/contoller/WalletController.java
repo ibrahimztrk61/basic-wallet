@@ -2,6 +2,7 @@ package com.example.contoller;
 
 import com.example.wallet.command.CreateWalletCommand;
 import org.axonframework.commandhandling.gateway.CommandGateway;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,9 +15,9 @@ public class WalletController {
         this.commandGateway = commandGateway;
     }
 
-    @PostMapping("/create")
-    public void createWallet (String id) {
+    @PostMapping("/{id}")
+    public void createWallet(@PathVariable("id") String id) {
         CreateWalletCommand command = new CreateWalletCommand(id);
-        commandGateway.send(command);
+        commandGateway.sendAndWait(command);
     }
 }
