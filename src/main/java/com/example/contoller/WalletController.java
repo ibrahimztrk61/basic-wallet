@@ -1,9 +1,11 @@
 package com.example.contoller;
 
 import com.example.wallet.command.CreateWalletCommand;
+import com.example.wallet.command.DepositCommand;
 import org.axonframework.commandhandling.gateway.CommandGateway;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.math.BigDecimal;
 
 @RestController
 public class WalletController {
@@ -14,9 +16,15 @@ public class WalletController {
         this.commandGateway = commandGateway;
     }
 
-    @PostMapping("/create")
-    public void createWallet (String id) {
+    @PostMapping("/{id}")
+    public void createWallet(@PathVariable("id") String id) {
         CreateWalletCommand command = new CreateWalletCommand(id);
-        commandGateway.send(command);
+        commandGateway.sendAndWait(command);
+    }
+
+    @PutMapping("/{id}/deposit")
+    public void deposit(@PathVariable("id") String id, @RequestParam("amount") BigDecimal amount) {
+        DepositCommand command = new DepositCommand(id, amount);
+        commandGateway.sendAndWait(command);
     }
 }
