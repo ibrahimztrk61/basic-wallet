@@ -9,3 +9,11 @@ spring:
       enabled: true
   datasource:
     url: jdbc:h2:mem:eventstore;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+
+axon:
+  amqp:
+    transaction-mode: transactional
+    exchange: wallet.events
+
+server:
+  port: 8083
